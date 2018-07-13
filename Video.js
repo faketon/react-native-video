@@ -38,17 +38,17 @@ export default class Video extends Component {
   setNativeProps(nativeProps) {
     this._root.setNativeProps(nativeProps);
   }
-  
+
   toTypeString(x) {
     switch (typeof x) {
       case "object":
-        return x instanceof Date 
-          ? x.toISOString() 
+        return x instanceof Date
+          ? x.toISOString()
           : JSON.stringify(x); // object, null
       case "undefined":
         return "";
       default: // boolean, number, string
-        return x.toString();      
+        return x.toString();
     }
   }
 
@@ -221,6 +221,9 @@ export default class Video extends Component {
 
     const nativeProps = Object.assign({}, this.props);
     Object.assign(nativeProps, {
+      lottieStyle:nativeProps.style,
+      lottieTextStyle:nativeProps.style,
+
       style: [styles.base, nativeProps.style],
       resizeMode: nativeResizeMode,
       src: {
@@ -274,12 +277,12 @@ export default class Video extends Component {
           /> */}
           {
             this.state.showPoster  == true ?
-            <View style={styles.flexCenter}>
+            <View style={this.props.lottieStyle}>
                 <LottieView ref={animation => {
                     this.animation = animation;
-                  }} source={require('../../src/images/animation_loading.json')}/>
-                <Text style={styles.loadingText}>
-                  loading...
+                  }} source={this.props.lottieSrc}/>
+                <Text style={this.props.lottieTextStyle}>
+                  {this.props.lottieText}
                 </Text>
             </View>
             :
@@ -317,6 +320,14 @@ const styles = StyleSheet.create({
 })
 
 Video.propTypes = {
+  lottieSrc: PropTypes.oneOfType([
+    PropTypes.shape({
+      uri: PropTypes.string
+    }),
+  ]),
+  lottieText:PropTypes.string,
+
+
   /* Native only */
   src: PropTypes.object,
   seek: PropTypes.number,
